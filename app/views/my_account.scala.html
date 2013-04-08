@@ -1,0 +1,139 @@
+@(faccounts:List[models.FAccount],js_array:String) 
+@import utils.StringUtil 
+@stylesheets={
+<link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.css")" />
+<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/jquery.jqplot.css")" />
+<link type="text/css" href="@routes.Assets.at("stylesheets/jquery-ui-1.8.1.custom.css")" rel="Stylesheet" />	
+} 
+@javascripts={
+<script src="@routes.Assets.at("javascripts/jquery-ui.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/jquery.dateplugin.cn.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/jquery-ui-timepicker-addon.js")" type="text/javascript"></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-ui-1.8.1.custom.min.js")"></script>
+<script language="javascript" type="text/javascript" src="@routes.Assets.at("javascripts/jquery.jqplot.js")"></script>
+<script language="javascript" type="text/javascript" src="@routes.Assets.at("javascripts/jqplot.pieRenderer.js")"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#start-date").datepicker({ altFormat: "yy-mm-dd" });
+		$("#end-date").datepicker({ altFormat: "yy-mm-dd" });
+		$("#query_btn").click(function() {
+			var start_date = $("#start-date").val();
+			var end_date = $("#end-date").val();
+			var money = $("#money").val();
+			var n = /^[0-9]*$/;
+			if (end_date == "" && start_date != "") {
+				alert_info("请选择结束日期!");
+				return false;
+			}
+			if (money != "" && n.test(money) == false) {
+				alert_info("请填写正确的金额!");
+				return false;
+			}
+		});
+	})
+	function alert_info(str){
+		$("#alert").show();
+		$("#alert").html(str);
+	}
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var ss = "@js_array";
+    s1 = eval(ss);   
+    plot1 = $.jqplot('chart1', [s1], {
+        grid: {
+            drawBorder: false, 
+            drawGridlines: false,
+            background: '#ffffff',
+            shadow:false
+        },
+        axesDefaults: {
+            
+        },
+        seriesDefaults:{
+            renderer:$.jqplot.PieRenderer,
+            rendererOptions: {
+                showDataLabels: true
+            }
+        },
+        legend: {
+            show: true,
+            rendererOptions: {
+                numberRows: 1
+            },
+            location: 's'
+        }
+    }); 
+});
+</script>
+
+} 
+@main("查账",stylesheets,javascripts){
+<div class="container">
+	<div class="row-fluid">
+		<h3 class="muted">我的消费</h3>
+		<div class="span6 sider">
+			<div class="span10 offset1">
+				<h4 class="muted">最近消费记录</h4>
+				<table class="table table-bordered">
+					<tr>
+						<th>序号</th>
+						<th>消费项目</th>
+						<th>消费金额</th>
+						<th>消费方式</th>
+						<th>消费日期</th>
+					</tr>
+					@for(i <- 0 to faccounts.size()-1){
+					<tr>
+						<td>@(i+1)</td>
+						<td>@faccounts.get(i).account_project</td>
+						<td>@faccounts.get(i).account_money</td>
+						<td>@if(faccounts.get(i).account_bank == "cash"){现金}else{信用卡}</td>
+						<td>@StringUtil.convertDate(faccounts.get(i).account_date,"yyyy-MM-dd")</td>
+					</tr>
+					}
+				</table>
+			</div>
+		</div>
+		<div class="span5 sider">
+			<div id="alert" class="alert alert-error" style="display:none;"></div>
+			<h4 class="muted offset2">我的查询器</h4>
+			<div class="span">
+				<form class="form-horizontal" method="post" action="/query-account">
+					<div class="control-group">
+						<label class="control-label" for="start-date">开始日期</label>
+						<div class="controls">
+							<input type="text" id="start-date" name="start_date" readonly="readonly" placeholder="点击选择开始日期">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="end-date">结束日期</label>
+						<div class="controls">
+							<input type="text" id="end-date" name="end_date" readonly="readonly" placeholder="点击选择结束日期">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="money">金额</label>
+						<div class="controls">
+							<input type="text" id="money" name="money" value="" placeholder="金额">
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<button class="btn btn-large btn-primary" id="query_btn">查一下</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!--  查询结果 -->
+		<div class="span6 sider top20">
+			<div class="span offset1">
+				<h4 class="muted">分析结果</h4>
+				 <div id="chart1" style="margin-top:20px; margin-left:20px; width:450px; height:450px;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+}

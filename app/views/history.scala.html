@@ -1,0 +1,66 @@
+@(faccounts:List[models.FAccount],currentPage:Int,totalPage:Int) 
+@import utils.StringUtil 
+@stylesheets={} 
+@javascripts={
+<script type="text/javascript">
+	function prev(currentPage) {
+		window.location.href = "/history/" + (currentPage - 1) + "/20";
+	}
+	function next(currentPage) {
+		window.location.href = "/history/" + (currentPage + 1) + "/20";
+	}
+	function current(currentPage) {
+		window.location.href = "/history/" + (currentPage) + "/20";
+	}
+</script>
+} @main("对账",stylesheets,javascripts){
+<div class="container">
+	<div class="row-fluid">
+		<h3 class="muted">历史消费</h3>
+		<div class="span sider">
+			<div class="span10 offset1">
+				<h4 class="muted">全部消费记录</h4>
+				<table class="table table-bordered">
+					<tr>
+						<th>序号</th>
+						<th>消费项目</th>
+						<th>消费金额</th>
+						<th>消费方式</th>
+						<th>消费日期</th>
+					</tr>
+					@for(i <- 0 to faccounts.size()-1){
+					<tr>
+						<td>@(i+1)</td>
+						<td>@faccounts.get(i).account_project</td>
+						<td>@faccounts.get(i).account_money</td>
+						<td>@if(faccounts.get(i).account_bank == "cash"){现金}else{信用卡}</td>
+						<td>@StringUtil.convertDate(faccounts.get(i).account_date,"yyyy-MM-dd")</td>
+					</tr>
+					}
+				</table>
+			</div>
+			<div class="span4 offset4">
+				<div class="pagination pagination-large">
+					<ul>
+						<li><a href="javascript:void(0);" @if(currentPage> 1){onclick="prev(@currentPage)"}>上一页</a></li>
+						 @if((currentPage-3)>=1){
+						<li><a href="javascript:void(0);" onclick="current(@currentPage-3)">@(currentPage-3)</a></li> }
+						@if((currentPage-2)>=1){
+						<li><a href="javascript:void(0);" onclick="current(@currentPage-2)">@(currentPage-2)</a></li> }
+						@if((currentPage-1)>=1){
+						<li><a href="javascript:void(0);" onclick="current(@currentPage-1)">@(currentPage-1)</a></li> }
+						<li class="active"><a href="javascript:void(0);" onclick="current(@currentPage)">@currentPage</a></li> 
+						@if((currentPage+1) <= totalPage){
+						<li><a href="javascript:void(0);" onclick="current(@currentPage+1)">@(currentPage+1)</a></li> } 
+						@if((currentPage+2) <= totalPage){
+						<li><a href="javascript:void(0);" onclick="current(@currentPage+2)">@(currentPage+2)</a></li> }
+						@if((currentPage+3)<= totalPage){
+						<li><a href="javascript:void(0);" onclick="current(@currentPage+3)">@(currentPage+3)</a></li> }
+						<li><a href="javascript:void(0);" @if(currentPage< totalPage){ onclick="next(@currentPage)"}>下一页</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+}

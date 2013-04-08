@@ -1,0 +1,55 @@
+@(message:String)
+@stylesheets={
+<link href="@routes.Assets.at("stylesheets/login.css")" rel="stylesheet">
+}
+@javascripts={
+<script type="text/javascript">
+$(document).ready(function() {
+	var message = "@message";
+	if(message != ""){
+		$("#alert").show();
+		$("#alert").html(message);
+	}
+	$("#login-btn").click(function() {
+		var username = $("#username").val();
+		var password = $("#password").val();
+		if (username == "") {
+			$("#alert").show();
+			$("#alert").html("请填写用户名!");
+			return false;
+		} else if (password == "") {
+			$("#alert").show();
+			$("#alert").html("请填写密码!");
+			return false;
+		}
+	});
+})
+</script>
+}
+@main("饭爱饭记账系统",stylesheets,javascripts) {
+<div class="container">
+	<div class="row-fluid">
+		<div class="span8">
+			<div class="hero-unit">
+				<h1>个人记账管理</h1>
+				<p>"月光族"整理自己钱包的"法宝",让自己的每一分钱都有出处.</p>
+				<p>
+					<a href="/register" class="btn btn-primary btn-large">注册</a>
+				</p>
+			</div>
+		</div>
+		<div class="span4">
+		    <div id="alert" class="alert alert-error" style="display: none;"></div>
+			<form class="form-signin" action="/login" method="post">
+				<h2 class="form-signin-heading">请登陆</h2>
+				<input type="text" id="username" name="username" class="input-block-level" placeholder="用户名/电子邮箱/手机号码"> 
+				<input type="password" id="password" name="password" class="input-block-level" placeholder="密码"> 
+				<label class="checkbox">
+					<input type="checkbox" value="remember-me">记住用户名
+				</label>
+				<button class="btn btn-large btn-primary" id="login-btn" type="submit">登陆</button>
+			</form>
+		</div>
+	</div>
+</div>
+}
