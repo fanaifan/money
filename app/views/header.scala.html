@@ -15,11 +15,22 @@
 							<li><a href="/history/1/20">对账</a></li>
 							<li class="divider"></li>
 							<li class="nav-header">银行卡管理</li>
-							<li><a href="#">信用卡</a></li>
-							<li><a href="#">借记卡</a></li>
+							<li><a href="/add-credit">添加信用卡</a></li>
+							<li><a href="/credit">信用卡</a></li>
 						</ul>
 					</li>
 					<li><a href="/about">关于系统</a></li>
+					<li>
+						@if(session().get("username") != null){
+							<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">@session().get("username")<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<!-- <li><a href="/my-info">我的信息</a></li> -->
+								<li><a href="/logout">退出</a></li>
+							</ul>
+						}else{
+							<a href="/">登陆</a>
+						}
+					</li>
 				</ul>
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-@(faccounts:List[models.FAccount]) 
+@(faccounts:List[models.FAccount],credit:String) 
 @stylesheets={
 <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.css")" />
 } 
@@ -40,7 +40,9 @@
 	<div class="row-fluid">
 		<h3 class="muted">添加消费记录</h3>
 		<div class="span6 sider">
-			<div id="alert" class="alert alert-error" style="display: none;"></div>
+			<div class="span10 offset1">
+				<div id="alert" class="alert alert-error" style="display: none;"></div>
+			</div>
 			<form class="form-horizontal" method="post" action="/add-account">
 				<div class="control-group">
 					<label class="control-label" for="account-date">消费日期</label>
@@ -65,10 +67,12 @@
 						<label class="radio"> <input type="radio" name="account_bank" id="account-bank" value="cash" checked> 现金消费
 						</label>
 					</div>
+					@if(credit == "yes"){
 					<div class="controls">
 						<label class="radio"> <input type="radio" name="account_bank" id="account-bank" value="credit"> 信用卡消费
 						</label>
 					</div>
+					}
 				</div>
 				<div class="control-group">
 					<div class="controls">

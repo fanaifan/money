@@ -5,15 +5,21 @@
 # Home page
 GET     /                           controllers.Application.index()
 POST	/login						controllers.Application.login()
+GET		/logout						controllers.Application.logout()
 GET		/register					controllers.Application.register_html()
 POST	/register					controllers.Application.register()
+GET		/about						controllers.Application.about()
 GET		/add-account				controllers.Account.add_account_html()
 POST	/add-account				controllers.Account.add_account()
 GET		/delete-account/:id			controllers.Account.delete_account(id:Long)
 GET		/my-account					controllers.Account.my_account()
 POST	/query-account				controllers.Account.query_account()
 GET		/history/:page/:size		controllers.Account.history_account(page:Int,size:Int)
-GET		/about						controllers.Application.about()
+GET		/add-credit					controllers.Card.add_credit_html()
+POST	/add-credit					controllers.Card.add_credit()
+GET		/credit						controllers.Card.credit()
+GET		/my-info					controllers.User.my_info()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

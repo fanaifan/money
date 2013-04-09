@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import models.FAccount;
+import models.FCard;
 import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -19,26 +20,31 @@ public class Account extends Controller {
 	public static Result add_account_html() {
 		String username = session().get("username");
 		List<FAccount> faccounts = FAccount.getTodayAccounts(username);
-		return ok(add_account.render(faccounts));
+		if(FCard.isBindCard(username)){
+			return ok(add_account.render(faccounts,"no"));
+		}
+		return ok(add_account.render(faccounts,"yes"));
 	}
 
 	public static Result add_account() {
 
 		Map<String, String> map = form().bindFromRequest().data();
-		Logger.info(Json.toJson(map).toString());
-		if (map == null || map.size() == 0) {
-			return redirect("/add-account");
-		}
 		Date account_date = StringUtil.convertDate(map.get(StringUtil.formdata("account_date")),null);
 		String account_project = map.get(StringUtil.formdata("account_project"));
 		float account_money = Float.parseFloat(map.get(StringUtil.formdata("account_money")));
 		String account_bank = map.get(StringUtil.formdata("account_bank"));
+		
 		String username = session().get("username");
 		if(username==null || username.equals("")){
 			return redirect("/");
 		}
-
-		Logger.info(account_date.toString());
+		
+		if(account_bank.equals("credit")){
+			FCard card = FCard.getCard(username);
+			card.debt_money += account_money;
+			FCard.updateCard(card);
+		}
+		
 		FAccount fa = new FAccount(username,account_project, account_money, account_date, account_bank);
 		FAccount.createAccount(fa);
 
@@ -51,7 +57,7 @@ public class Account extends Controller {
 		return redirect("/add-account");
 	}
 	
-	private static String get_js(List<FAccount> faccounts){
+	protected static String get_js(List<FAccount> faccounts){
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		for(FAccount fa : faccounts){

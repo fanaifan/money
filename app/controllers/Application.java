@@ -45,6 +45,11 @@ public class Application extends Controller {
 		return redirect("/");
 	}
 	
+	public static Result logout(){
+		session().clear();
+		return redirect("/");
+	}
+	
 	public static Result about(){
 		return ok(about.render());
 	}

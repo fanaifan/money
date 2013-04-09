@@ -31,7 +31,7 @@ $(document).ready(function() {
 	<div class="row-fluid">
 		<div class="span8">
 			<div class="hero-unit">
-				<h1>个人记账管理</h1>
+				<h2>个人记账管理</h2>
 				<p>"月光族"整理自己钱包的"法宝",让自己的每一分钱都有出处.</p>
 				<p>
 					<a href="/register" class="btn btn-primary btn-large">注册</a>
@@ -39,7 +39,9 @@ $(document).ready(function() {
 			</div>
 		</div>
 		<div class="span4">
-		    <div id="alert" class="alert alert-error" style="display: none;"></div>
+		    <div class="span10 offset1">
+				<div id="alert" class="alert alert-error" style="display: none;"></div>
+			</div>
 			<form class="form-signin" action="/login" method="post">
 				<h2 class="form-signin-heading">请登陆</h2>
 				<input type="text" id="username" name="username" class="input-block-level" placeholder="用户名/电子邮箱/手机号码"> 

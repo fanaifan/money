@@ -1,0 +1,84 @@
+@(message:String)
+@stylesheets={} 
+@javascripts={
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#credit-btn").click(function() {
+			var bank_name = $("#bank-name").val();
+			var credit_money = $("#credit-money").val();
+			var repay_day = $("#repay-day").val();
+			var n = /^[0-9]*$/;
+
+			if (bank_name == "") {
+				alert_info("请填写银行名称!");
+				return false;
+			} else if (credit_money == "") {
+				alert_info("请填写信用额度!");
+				return false;
+			} else if (n.test(credit_money) == false) {
+				alert_info("信用额度应为数字!");
+				return false;
+			} else if (credit_money < 1){
+				alert_info("信用额度应大于1元!");
+				return false;
+			} else if (repay_day == "") {
+				alert_info("请填写还款日期!");
+				return false;
+			} else if (n.test(repay_day) == false) {
+				alert_info("还款日应为数字!");
+				return false;
+			} else if (repay_day>31 || repay_day<1) {
+				alert_info("还款日应为1到31号之间!");
+				return false;
+			} 
+		});
+	})
+	function alert_info(str) {
+		$("#alert").show();
+		$("#alert").html(str);
+	}
+</script>
+} 
+@main("添加信用卡",stylesheets,javascripts){
+<div class="container">
+	<div class="row-fluid">
+		<div class="span6 offset3 sider">
+			<div class="span11 offset1">
+				<h3 class="text-error">添加信用卡</h3>
+			</div>
+			<div class="span10 offset1">
+				<div id="alert" class="alert alert-error" style="display: none;"></div>
+			</div>
+			<form class="form-horizontal" method="post" action="/add-credit">
+				<div class="control-group">
+					<label class="control-label" for="bank-name">银行名称</label>
+					<div class="controls">
+						<input type="text" id="bank-name" name="bank_name" placeholder="中国银行" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="credit-money">信用额度</label>
+					<div class="controls">
+						<input type="text" id="credit-money" name="credit_money" placeholder="8000" />元
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="repay-day">还款日</label>
+					<div class="controls">
+						<input type="text" id="repay-day" name="repay_day" placeholder="卡上日期08/16,填16" />
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+					@if(message == "ok"){
+						<button class="btn btn-large btn-primary" id="credit-btn" type="submit">添加</button>
+					}else{
+						<a href="/credit" class="btn btn-large btn-inverse" >暂支持绑定一张信用卡</a>
+					}
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+}

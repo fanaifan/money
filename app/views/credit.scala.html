@@ -1,0 +1,189 @@
+@(card:models.FCard,pie_js:String,line_js:String,repay:String,repayend:String) 
+@stylesheets={
+<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/jquery.jqplot.css")" />
+<style type="text/css">
+.jqplot-cursor-legend {
+	width: 160px;
+	font-family: "Courier New";
+	font-size: 0.85em;
+}
+
+td.jqplot-cursor-legend-swatch {
+	width: 1.3em;
+}
+
+div.jqplot-cursor-legend-swatch { /*      width: 15px;*/
+	
+}
+</style>
+} 
+@javascripts={
+<script language="javascript" type="text/javascript" src="@routes.Assets.at("javascripts/jquery.countdown.js")" ></script>
+<script language="javascript" type="text/javascript" src="@routes.Assets.at("javascripts/jquery.jqplot.js")"></script>
+<script language="javascript" type="text/javascript" src="@routes.Assets.at("javascripts/jqplot.pieRenderer.js")"></script>
+<script language="javascript" type="text/javascript" src="@routes.Assets.at("javascripts/jqplot.cursor.js")"></script>
+<script language="javascript" type="text/javascript" src="@routes.Assets.at("javascripts/jqplot.dateAxisRenderer.js")"></script>
+<script type="text/javascript">
+	$(function() {
+		var repay = '@repay';
+		var repayend = '@repayend';
+		$('#counter').countdown({
+			image : '@routes.Assets.at("images/digits.png")',
+			startTime : repay
+		});
+		$('#counter1').countdown({
+			image : '@routes.Assets.at("images/digits.png")',
+			startTime : repayend
+		});
+
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var ss = "@pie_js";
+		s1 = eval(ss);
+		plot1 = $.jqplot('chart1', [ s1 ], {
+			grid : {
+				drawBorder : false,
+				drawGridlines : false,
+				background : '#ffffff',
+				shadow : false
+			},
+			axesDefaults : {
+
+			},
+			seriesDefaults : {
+				renderer : $.jqplot.PieRenderer,
+				rendererOptions : {
+					showDataLabels : true
+				}
+			},
+			legend : {
+				show : true,
+				rendererOptions : {
+					numberRows : 1
+				},
+				location : 's'
+			}
+		});
+	});
+</script>
+<script type="text/javascript" language="javascript">
+	$(document).ready(function() {
+		var gg = "@line_js";
+		var goog = eval(gg);
+		//var goog = [ [ "2012-11-13", 425.32 ], [ "2013-3-10", 528.75 ],[ "2012-12-31", 515.25 ] ];
+
+				plot = $.jqplot('chart2', [ goog ], {
+					// title: 'Google, Inc.', 
+					series : [ {
+						// label: 'Google, Inc.', 
+						neighborThreshold : -1
+					} ],
+					axes : {
+						xaxis : {
+							renderer : $.jqplot.DateAxisRenderer,
+							tickInterval : '1 months',
+							tickOptions : {
+								formatString : '%Y-%#m-%#d'
+							}
+						},
+						yaxis : {
+							renderer : $.jqplot.LogAxisRenderer,
+							tickOptions : {
+								formatString : '%.2f'
+							}
+						}
+					},
+					cursor : {
+						show : true,
+						zoom : true
+					}
+				});
+			});
+</script>
+} 
+@main("信用卡",stylesheets,javascripts){
+<div class="container">
+	<div class="row-fluid">
+		<h3 class="muted">信用卡消费情况</h3>
+		<div class="span11 offset1">
+			<div class="span5 sider">
+				<div class="span11 offset1">
+					<h1>@card.bank_name</h1>
+				</div>
+				<div class="span10 offset1">
+					<div class="span6">
+						<h3>信用额度:</h3>
+					</div>
+					<div class="span4">
+						<h2 class="text-error">@card.credit_money</h2>
+					</div>
+					<div class="span2">
+						<h2>元</h2>
+					</div>
+				</div>
+				<div class="span10 offset1">
+					<div class="span6">
+						<h3>信用卡欠款:</h3>
+					</div>
+					<div class="span4">
+						<h2 class="text-success">@card.debt_money</h2>
+					</div>
+					<div class="span2">
+						<h2>元</h2>
+					</div>
+				</div>
+				<div class="span10 offset1">
+					<div class="span6">
+						<h3>信用卡可用额:</h3>
+					</div>
+					<div class="span4">
+						<h2 class="text-warning">@(card.credit_money-card.debt_money)</h2>
+					</div>
+					<div class="span2">
+						<h2>元</h2>
+					</div>
+				</div>
+				<div class="span10 offset1">
+					<div class="span6">
+						<h3>还款日期:</h3>
+					</div>
+					<div class="span6">
+						<h2 class="muted">每月@card.repay_day号</h2>
+					</div>
+				</div>
+			</div>
+			<div class="span6 sider">
+				<div class="span11 offset1">
+					<h3 class="muted">距离还款日期:</h3>
+					<div id="counter"></div>
+				</div>
+			</div>
+			<div class="span6 sider top20">
+				<div class="span11 offset1">
+					<h3 class="muted">距离还款截止日期:</h3>
+					<div id="counter1"></div>
+				</div>
+			</div>
+		</div>
+		<div class="span11 offset1">
+			<div class="span5 sider">
+				<div class="span11 offset1">
+					<h4 class="muted">分析结果</h4>
+				</div>
+				<div id="chart1" style="margin-top: 20px; width: 400px; height: 400px;"></div>
+			</div>
+			<div class="span6 sider top20">
+				<div class="span11 offset1">
+					<h4 class="muted">分析结果</h4>
+				</div>
+				<div class="span10 offset1">
+					<div id="chart2" class="jqPlot" style="margin-top: 20px; width: 400px; height: 400px;"></div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+}

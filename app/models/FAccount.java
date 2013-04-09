@@ -1,12 +1,13 @@
 package models;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import play.Logger;
 import play.db.ebean.Model;
 import utils.StringUtil;
 
@@ -67,6 +68,12 @@ public class FAccount extends Model{
 		return find.where().eq("username", username).order().desc("account_date").findPagingList(page_size).getTotalPageCount();
 	}
 	
+	public static List<FAccount> getAccounts(String username, String year, String month, int page, int page_size){
+		String start_date = year + "-" + month + "-01";
+		String end_date =  year + "-" + month + "-31";
+		return find.where().eq("username", username).between("account_date", start_date, end_date).findList();
+	}
+	
 	public static List<FAccount> getTodayAccounts(String username){
 		return find.where().eq("username", username).order().desc("account_date").findList();
 	}
@@ -84,7 +91,12 @@ public class FAccount extends Model{
 	public static List<FAccount> getAccounts(String username, String start_date, String end_date){
 		return find.where().eq("username", username).between("account_date", start_date, end_date).findList();
 	}
-
-
+	
+	public static List<FAccount> getCreditAccounts(String username){
+		Map<String, Object> condition = new HashMap<String,Object>();
+		condition.put("username", username);
+		condition.put("account_bank", "credit");
+		return find.where().allEq(condition).findList();
+	}
 
 }
