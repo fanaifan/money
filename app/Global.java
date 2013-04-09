@@ -1,10 +1,10 @@
 import static play.mvc.Results.badRequest;
 import static play.mvc.Results.internalServerError;
 import static play.mvc.Results.notFound;
-
 import java.lang.reflect.Method;
 
 import play.GlobalSettings;
+import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Http.Request;
@@ -13,7 +13,7 @@ import play.mvc.Result;
 public class Global extends GlobalSettings {
 
 	public Result onError(Throwable t) {
-		return internalServerError("500错误，请重试！");
+		return internalServerError(Json.toJson(t.getStackTrace()).toString());
 	}
 
 	public Result onHandlerNotFound(String uri) {
